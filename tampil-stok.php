@@ -10,15 +10,26 @@ try {
     $conn = new PDO("mysql:host=$host;dbname=$db_name", $db_user, $db_password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $stmt = $conn->prepare("SELECT * FROM user");
+    // Query dengan parameter 'id'
+    $stmt = $conn->prepare("SELECT * FROM stok");
     $stmt->execute();
 
+    // Ambil hasil data
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode([
-        'status' => 'success',
-        'data' => $users
-    ]);
+    // Periksa apakah ada data yang ditemukan
+    if ($users) {
+        echo json_encode([
+            'status' => 'success',
+            'data' => $users
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Data tidak ditemukan'
+        ]);
+    }
+
 } catch (PDOException $e) {
     echo json_encode([
         'status' => 'error',
